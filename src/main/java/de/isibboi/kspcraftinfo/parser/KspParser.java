@@ -9,15 +9,17 @@ import org.apache.logging.log4j.LogManager;
 
 import de.isibboi.kspcraftinfo.Craft;
 
-public class CraftParser extends Parser<Craft> {
+public class KspParser extends Parser<Craft> {
 	private Attribute lastParseResult;
 	
-	protected CraftParser() {
-		super(LogManager.getLogger(CraftParser.class));
+	protected KspParser() {
+		super(LogManager.getLogger(KspParser.class));
 	}
 
 	@Override
 	protected Craft parseInternal(BufferedReader in) throws IOException {
+		long start = System.nanoTime();
+		
 		Deque<Attribute> attributes = new ArrayDeque<>();
 		attributes.push(new Attribute("ROOT"));
 		String line;
@@ -82,6 +84,8 @@ public class CraftParser extends Parser<Craft> {
 			error("Missing closing brace.", lineNumber);
 			return null;
 		} else {
+			log.info("parseInternal: " + (System.nanoTime() - start) + " ns");
+			
 			lastParseResult = attributes.peek();
 			return new Craft(attributes.pop());
 		}
