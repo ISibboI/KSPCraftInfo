@@ -64,7 +64,7 @@ public class CraftParser extends Parser<Craft> {
 								return null;
 							}
 
-							attributes.peek().setProperty(key, value);
+							attributes.peek().addProperty(key, value);
 						} else {
 							Attribute newBlock = new Attribute(line);
 							attributes.peek().addChild(newBlock);
