@@ -11,7 +11,7 @@ import de.isibboi.kspcraftinfo.Craft;
 
 public class KspParser extends Parser<Craft> {
 	private Attribute lastParseResult;
-	
+
 	protected KspParser() {
 		super(LogManager.getLogger(KspParser.class));
 	}
@@ -19,7 +19,7 @@ public class KspParser extends Parser<Craft> {
 	@Override
 	protected Craft parseInternal(BufferedReader in) throws IOException {
 		long start = System.nanoTime();
-		
+
 		Deque<Attribute> attributes = new ArrayDeque<>();
 		attributes.push(new Attribute("ROOT"));
 		String line;
@@ -35,6 +35,12 @@ public class KspParser extends Parser<Craft> {
 				hasLines = false;
 			} else {
 				line = line.trim();
+
+				int commentIndex = line.indexOf("//");
+
+				if (commentIndex != -1) {
+					line = line.substring(0, commentIndex);
+				}
 
 				if (!line.isEmpty()) {
 					if (openingBraceRequired) {
@@ -79,18 +85,18 @@ public class KspParser extends Parser<Craft> {
 
 			lineNumber++;
 		}
-		
+
 		if (attributes.size() > 1) {
 			error("Missing closing brace.", lineNumber);
 			return null;
 		} else {
 			log.info("parseInternal: " + (System.nanoTime() - start) + " ns");
-			
+
 			lastParseResult = attributes.peek();
 			return new Craft(attributes.pop());
 		}
 	}
-	
+
 	public Attribute getLastParseResult() {
 		return lastParseResult;
 	}
