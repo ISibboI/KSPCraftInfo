@@ -72,12 +72,12 @@ public class ModDatabase {
 					+ "?useUnicode=true&characterEncoding=utf-8", user, password);
 
 			Statement stmt = connection.createStatement();
-			stmt.execute("CREATE TABLE IF NOT EXISTS PartTable (id INT PRIMARY KEY AUTO_INCREMENT, mod TEXT, part TEXT, INDEX(part(16)))");
+			stmt.execute("CREATE TABLE IF NOT EXISTS PartTable (id INT PRIMARY KEY AUTO_INCREMENT, modName TEXT, partName TEXT, INDEX (partName(16)))");
 
-			insertPartStatement = connection.prepareStatement("INSERT INTO PartTable (mod, part) VALUES (?, ?)");
+			insertPartStatement = connection.prepareStatement("INSERT INTO PartTable (modName, partName) VALUES (?, ?)");
 
 			// Read database, create index.
-			ResultSet result = stmt.executeQuery("SELECT mod, part FROM PartTable");
+			ResultSet result = stmt.executeQuery("SELECT modName, partName FROM PartTable");
 
 			while (result.next()) {
 				inMemory.put(result.getString(2), result.getString(1));
@@ -86,6 +86,7 @@ public class ModDatabase {
 			result.close();
 		} catch (SQLException | ClassNotFoundException e) {
 			LOG.log(Level.FATAL, "Could not connect to database!", e);
+			throw new RuntimeException(e);
 		}
 	}
 
@@ -133,5 +134,14 @@ public class ModDatabase {
 		}
 		
 		return mods;
+	}
+	
+	public void deleteAll() {
+		try {
+			connection.createStatement().execute("DROP TABLE PartTable");
+			inMemory.clear();
+		} catch (SQLException e) {
+			LOG.error("Could not drop PartTable", e);
+		}
 	}
 }

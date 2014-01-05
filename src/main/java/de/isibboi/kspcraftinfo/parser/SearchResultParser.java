@@ -15,7 +15,7 @@ import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 
 public class SearchResultParser extends Parser<List<URI>> {
-	protected SearchResultParser() {
+	public SearchResultParser() {
 		super(LogManager.getLogger(SearchResultParser.class));
 	}
 

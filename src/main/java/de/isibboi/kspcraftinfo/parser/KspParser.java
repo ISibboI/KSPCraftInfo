@@ -9,7 +9,7 @@ import org.apache.logging.log4j.LogManager;
 
 import de.isibboi.kspcraftinfo.Craft;
 
-public class KspParser extends Parser<Craft> {
+public class KspParser extends Parser<Attribute> {
 	private Attribute lastParseResult;
 
 	protected KspParser() {
@@ -17,7 +17,7 @@ public class KspParser extends Parser<Craft> {
 	}
 
 	@Override
-	protected Craft parseInternal(BufferedReader in) throws IOException {
+	protected Attribute parseInternal(BufferedReader in) throws IOException {
 		long start = System.nanoTime();
 
 		Deque<Attribute> attributes = new ArrayDeque<>();
@@ -93,7 +93,7 @@ public class KspParser extends Parser<Craft> {
 			log.info("parseInternal: " + (System.nanoTime() - start) + " ns");
 
 			lastParseResult = attributes.peek();
-			return new Craft(attributes.pop());
+			return attributes.pop();
 		}
 	}
 
